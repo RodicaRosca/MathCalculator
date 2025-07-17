@@ -7,5 +7,5 @@ class FibonacciRequest(BaseModel):
     n: int 
 
 class PowerRequest(BaseModel):
-    base: int
-    exponent: int
+    base: float
+    exponent: float
