@@ -9,7 +9,7 @@ class MathService:
         return result
 
     @staticmethod
-    def calculate_fibonacci(n: int) -> int:
+    def fibonacci(n: int) -> int:
         if n < 0:
             raise ValueError("Input must be a non-negative integer.")
         a, b = 0, 1

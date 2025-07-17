@@ -31,9 +31,9 @@ def calculate(request: Request, n: int = Form(...)):
     return templates.TemplateResponse("factorial.html", {"request": request, "result": result})
 
 @router.post("/calculate_pow", response_class=HTMLResponse)
-def calculate(request: Request, n: int = Form(...)):
+def calculate(request: Request, n: int = Form(...), m: int = Form(...)):
     try:
-        result = MathService.factorial(n)
+        result = MathService.power(n, m)
     except Exception as e:
         result = str(e)
     return templates.TemplateResponse("pow.html", {"request": request, "result": result})
@@ -41,7 +41,7 @@ def calculate(request: Request, n: int = Form(...)):
 @router.post("/calculate_fibonacci", response_class=HTMLResponse)
 def calculate(request: Request, n: int = Form(...)):
     try:
-        result = MathService.factorial(n)
+        result = MathService.fibonacci(n)
     except Exception as e:
         result = str(e)
     return templates.TemplateResponse("fibonacci.html", {"request": request, "result": result})

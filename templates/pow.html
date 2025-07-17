@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pow Calculator</title>
+</head>
+<body>
+    <h1>Pow Calculator</h1>
+    <form action="/calculate_pow" method="post">
+        <input type="number" name="n" min="0" required placeholder="Base">
+        <input type="number" name="m" min="0" required placeholder="Exponent">
+        <button type="submit">Calculate</button>
+    </form>
+    {% if result is not none %}
+        <p>Result: {{ result }}</p>
+    {% endif %}
+    <br>
+    <a href="/"><button>Back to Home</button></a>
+</body>
+</html>
