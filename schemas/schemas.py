@@ -6,6 +6,6 @@ class FactorialRequest(BaseModel):
 class FibonacciRequest(BaseModel):
     n: int 
 
-class PowerRequest(BaseModel):
+class PowRequest(BaseModel):
     base: float
     exponent: float

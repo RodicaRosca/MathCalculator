@@ -19,6 +19,7 @@ from services.services import MathService
 from schemas.schemas import PowRequest, FibonacciRequest, FactorialRequest
 from db.database import SessionLocal
 from models.request_log import RequestLog
+import json
 
 router = APIRouter()
 
@@ -35,7 +36,7 @@ def pow_endpoint(req: PowRequest, db: Session = Depends(get_db)):
 
     log = RequestLog(
         operation="pow",
-        parameters=str(req.dict()),
+        parameters=json.dumps(req.model_dump()),
         result=str(result)
     )
 
@@ -52,7 +53,7 @@ def fibonacci_endpoint(req: FibonacciRequest, db: Session = Depends(get_db)):
     
     log = RequestLog(
         operation="fibonacci",
-        parameters=str(req.dict()),
+        parameters=json.dumps(req.model_dump()),
         result=str(result)
     )
 
@@ -68,11 +69,18 @@ def factorial_endpoint(req: FactorialRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     
     log = RequestLog(
-        operation="factorial",
-        parameters=str(req.dict()),
-        result=str(result)
-    )
-    
+    operation="factorial",
+    parameters=json.dumps(req.model_dump()),
+    result=str(result)
+)
+
     db.add(log)
     db.commit()
     return {"result": result}
+
+@router.post("/testlog")
+def test_log(db: Session = Depends(get_db)):
+    log = RequestLog(operation="test", parameters="{}", result="test")
+    db.add(log)
+    db.commit()
+    return {"status": "inserted"}
