@@ -8,4 +8,4 @@ class RequestLog(Base):
     operation = Column(String, index=True)
     parameters = Column(Text)
     result = Column(String)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))

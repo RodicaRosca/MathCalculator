@@ -1,21 +1,6 @@
-# from fastapi import APIRouter, Depends, HTTPException
-# from sqlalchemy.orm import Session
-# from services.services import MathService
-# from schemas.schemas import FactorialRequest
-
-# router = APIRouter()
-
-# @router.post("/factorial")
-# def factorial_endpoint(req: FactorialRequest):
-#     try:
-#         result = MathService.factorial(req.n)
-#     except ValueError as e:
-#         raise HTTPException(status_code=400, detail=str(e))
-#     return {"result": result}
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from services.services import MathService
+from services.math_services import MathService
 from schemas.schemas import PowRequest, FibonacciRequest, FactorialRequest
 from db.database import SessionLocal
 from models.request_log import RequestLog
@@ -69,13 +54,16 @@ def factorial_endpoint(req: FactorialRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     
     log = RequestLog(
-    operation="factorial",
-    parameters=json.dumps(req.model_dump()),
-    result=str(result)
-)
+        operation="factorial",
+        parameters=json.dumps(req.model_dump()),    
+        result=str(result)
+    )
 
+    print("Before db.add()")
     db.add(log)
+    print("Before db.commit()")
     db.commit()
+    print("Committed to DB!")
     return {"result": result}
 
 @router.post("/testlog")
