@@ -1,10 +1,10 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from services.math_services import MathService
 from schemas.schemas import PowRequest, FibonacciRequest, FactorialRequest
 from db.database import SessionLocal
 from models.request_log import RequestLog
-import json
 
 router = APIRouter()
 
@@ -27,6 +27,7 @@ def pow_endpoint(req: PowRequest, db: Session = Depends(get_db)):
 
     db.add(log)
     db.commit()
+
     return {"result": result}
 
 @router.post("/fibonacci")
@@ -59,11 +60,9 @@ def factorial_endpoint(req: FactorialRequest, db: Session = Depends(get_db)):
         result=str(result)
     )
 
-    print("Before db.add()")
     db.add(log)
-    print("Before db.commit()")
     db.commit()
-    print("Committed to DB!")
+
     return {"result": result}
 
 @router.post("/testlog")
