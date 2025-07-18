@@ -1,12 +1,14 @@
+import datetime
+import json
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from services.math_services import MathService
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from db.database import SessionLocal
-import json
 from models.request_log import RequestLog
+from services.math_services import MathService
+from kafka_logging import log_to_kafka
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -49,6 +51,13 @@ def calculate(request: Request, n: int = Form(...), db: Session = Depends(get_db
     db.add(log)
     db.commit()
 
+    log_to_kafka({
+        "operation": "factorial",
+        "parameters": {"n": n},
+        "result": result,
+        "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
+    })
+
     return templates.TemplateResponse("factorial.html", {"request": request, "result": result})
 
 @router.post("/calculate_pow", response_class=HTMLResponse)
@@ -65,6 +74,14 @@ def calculate(request: Request, n: int = Form(...), m: int = Form(...), db: Sess
     )
     db.add(log)
     db.commit()
+
+    log_to_kafka({
+        "operation": "factorial",
+        "parameters": {"n": n},
+        "result": result,
+        "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
+    })
+
     return templates.TemplateResponse("pow.html", {"request": request, "result": result})
 
 @router.post("/calculate_fibonacci", response_class=HTMLResponse)
@@ -81,4 +98,12 @@ def calculate(request: Request, n: int = Form(...), db: Session = Depends(get_db
     )
     db.add(log)
     db.commit()
+
+    log_to_kafka({
+        "operation": "factorial",
+        "parameters": {"n": n},
+        "result": result,
+        "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
+    })
+
     return templates.TemplateResponse("fibonacci.html", {"request": request, "result": result})
