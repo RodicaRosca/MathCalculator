@@ -8,7 +8,7 @@ from fastapi import Depends
 from db.database import SessionLocal
 from models.request_log import RequestLog
 from services.math_services import MathService
-#from kafka_logging import log_to_kafka
+# from kafka_logging import log_to_kafka
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
