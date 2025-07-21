@@ -8,8 +8,10 @@ services:
       - "8000:8000"
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - REDIS_HOST=redis 
     depends_on:
       - kafka
+      - redis
     volumes:
       - .:/app
 
