@@ -7,6 +7,7 @@ from models.request_log import User
 from db.database import SessionLocal
 from passlib.context import CryptContext
 from fastapi.responses import RedirectResponse
+from datetime import datetime, timedelta, UTC
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -30,7 +31,7 @@ def login(
     data = {
         "sub": user.username,
         "role": user.role,
-        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+        "exp": datetime.now(UTC) + timedelta(hours=1)
     }
     token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
     return {"access_token": token, "token_type": "bearer"}
