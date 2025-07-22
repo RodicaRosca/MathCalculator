@@ -9,3 +9,10 @@ class RequestLog(Base):
     parameters = Column(Text)
     result = Column(String)
     timestamp = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    role = Column(String, default="user") 
