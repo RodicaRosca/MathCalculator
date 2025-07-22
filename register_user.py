@@ -10,7 +10,7 @@ def create_user(username: str, password: str, role="user"):
     hashed = pwd_context.hash(password)
     user = User(username=username, hashed_password=hashed, role=role)
     db.add(user)
-    db.commit()
+    db.commit() 
     db.refresh(user)
     db.close()
     print(f"Created user: {username}")
