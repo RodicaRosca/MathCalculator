@@ -12,12 +12,17 @@ fastapi==0.116.1
 flake8==7.3.0
 greenlet==3.2.3
 h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
 idna==3.10
+iniconfig==2.1.0
 Jinja2==3.1.6
 kafka-python==2.2.15
 MarkupSafe==3.0.2
 mccabe==0.7.0
+packaging==25.0
 passlib==1.7.4
+pluggy==1.6.0
 prometheus-fastapi-instrumentator==7.1.0
 prometheus_client==0.22.1
 pyasn1==0.6.1
@@ -26,6 +31,9 @@ pycparser==2.22
 pydantic==2.11.7
 pydantic_core==2.33.2
 pyflakes==3.4.0
+Pygments==2.19.2
+pytest==8.4.1
+pytest-asyncio==1.1.0
 python-jose==3.5.0
 python-multipart==0.0.20
 redis==6.2.0

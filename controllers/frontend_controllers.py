@@ -147,7 +147,7 @@ def calculate(request: Request,
 
 @router.get("/login", response_class=HTMLResponse)
 def login_form(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request, "error": None})
+    return templates.TemplateResponse(request, "login.html", {"error": None})
 
 @router.post("/login", response_class=HTMLResponse)
 def login_post(request: Request, username: str = Form(...), password: str = Form(...)):
@@ -160,15 +160,15 @@ def login_post(request: Request, username: str = Form(...), password: str = Form
         resp.set_cookie(key="jwt_token", value=token, httponly=True)
         return resp
     else:
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
-
+        return templates.TemplateResponse(request, "login.html", {"error": "Invalid credentials"})
+    
 @router.get("/auth", response_class=HTMLResponse)
 def auth_form(request: Request):
     return templates.TemplateResponse("auth.html", {"request": request, "error": None})
 
 @router.get("/signup", response_class=HTMLResponse)
 def signup_form(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request, "error": None})
+   return templates.TemplateResponse(request, "signup.html", {"error": None})
 
 @router.post("/signup", response_class=HTMLResponse)
 def signup_post(request: Request, username: str = Form(...), password: str = Form(...)):
@@ -181,4 +181,5 @@ def signup_post(request: Request, username: str = Form(...), password: str = For
             error = response.json().get("detail", error)
         except Exception:
             pass
-        return templates.TemplateResponse("signup.html", {"request": request, "error": error})
+        return templates.TemplateResponse(request, "signup.html", {"error": None})
+
