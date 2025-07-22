@@ -11,6 +11,7 @@ from services.math_services import MathService
 from kafka_logging import log_to_kafka
 from auth import verify_token
 import requests
+from fastapi import Cookie, HTTPException
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -42,7 +43,15 @@ def factorial_page(request: Request):
 def calculate(request: Request, 
               n: int = Form(...), 
               db: Session = Depends(get_db),
-              user=Depends(verify_token)):
+              jwt_token: str = Cookie(None)):
+    if not jwt_token:
+        return RedirectResponse("/login", status_code=302)
+    
+    try:
+        payload = verify_token(token=jwt_token)
+    except:
+        return RedirectResponse("/login", status_code=302)
+     
     try:
         result = MathService.factorial(n)
     except Exception as e:
@@ -70,7 +79,15 @@ def calculate(request: Request,
               n: int = Form(...), 
               m: int = Form(...), 
               db: Session = Depends(get_db),
-              user=Depends(verify_token)):
+              jwt_token: str = Cookie(None)):
+    if not jwt_token:
+        return RedirectResponse("/login", status_code=302)
+
+    try:
+        payload = verify_token(token=jwt_token)
+    except:
+        return RedirectResponse("/login", status_code=302)
+
     try:
         result = MathService.power(n, m)
     except Exception as e:
@@ -97,7 +114,15 @@ def calculate(request: Request,
 def calculate(request: Request, 
               n: int = Form(...), 
               db: Session = Depends(get_db), 
-              user=Depends(verify_token)):
+              jwt_token: str = Cookie(None)):
+    if not jwt_token:
+        return RedirectResponse("/login", status_code=302)
+
+    try:
+        payload = verify_token(token=jwt_token)
+    except:
+        return RedirectResponse("/login", status_code=302)
+
     try:
         result = MathService.fibonacci(n)
     except Exception as e:

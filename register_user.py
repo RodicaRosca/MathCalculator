@@ -17,3 +17,5 @@ def create_user(username: str, password: str, role="user"):
 
 if __name__ == "__main__":
     create_user("admin", "changeme123", "admin")
+
+create_user("hello", "kitty", "admin")
