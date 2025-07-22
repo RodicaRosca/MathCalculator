@@ -6,9 +6,17 @@ from auth import authenticate_user, get_db, SECRET_KEY, ALGORITHM
 from models.request_log import User
 from db.database import SessionLocal
 from passlib.context import CryptContext
+from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @router.post("/token")
 def login(
@@ -27,23 +35,20 @@ def login(
     token = jwt.encode(data, SECRET_KEY, algorithm=ALGORITHM)
     return {"access_token": token, "token_type": "bearer"}
 
-@router.post("/signup")
-def signup(
-    username: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db)
-):
+@router.post("/signup2", status_code=status.HTTP_201_CREATED)
+def signup(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
     if user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered"
-        )
-
-    hashed_password = pwd_context.hash(password)
-    new_user = User(username=username, hashed_password=hashed_password, role="user")
+        raise HTTPException(status_code=400, detail="Username already registered")
+    hashed = pwd_context.hash(password)
+    new_user = User(username=username, hashed_password=hashed)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
     return {"msg": f"User '{username}' created successfully!"}
+
+@router.get("/logout")
+def logout():
+    response = RedirectResponse(url="/login", status_code=302)
+    response.delete_cookie("jwt_token")
+    return response

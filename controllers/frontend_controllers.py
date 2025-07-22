@@ -45,12 +45,12 @@ def calculate(request: Request,
               db: Session = Depends(get_db),
               jwt_token: str = Cookie(None)):
     if not jwt_token:
-        return RedirectResponse("/login", status_code=302)
+        return RedirectResponse("/auth", status_code=302)
     
     try:
         payload = verify_token(token=jwt_token)
     except:
-        return RedirectResponse("/login", status_code=302)
+        return RedirectResponse("/auth", status_code=302)
      
     try:
         result = MathService.factorial(n)
@@ -161,3 +161,24 @@ def login_post(request: Request, username: str = Form(...), password: str = Form
         return resp
     else:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
+
+@router.get("/auth", response_class=HTMLResponse)
+def auth_form(request: Request):
+    return templates.TemplateResponse("auth.html", {"request": request, "error": None})
+
+@router.get("/signup", response_class=HTMLResponse)
+def signup_form(request: Request):
+    return templates.TemplateResponse("signup.html", {"request": request, "error": None})
+
+@router.post("/signup", response_class=HTMLResponse)
+def signup_post(request: Request, username: str = Form(...), password: str = Form(...)):
+    response = requests.post("http://localhost:8000/signup2", data={"username": username, "password": password})
+    if response.status_code == 201:
+        return RedirectResponse(url="/login", status_code=302)
+    else:
+        error = "Signup failed"
+        try:
+            error = response.json().get("detail", error)
+        except Exception:
+            pass
+        return templates.TemplateResponse("signup.html", {"request": request, "error": error})
