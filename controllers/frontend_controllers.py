@@ -1,7 +1,7 @@
 import datetime
 import json
 from fastapi import APIRouter, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -10,6 +10,7 @@ from models.request_log import RequestLog
 from services.math_services import MathService
 from kafka_logging import log_to_kafka
 from auth import verify_token
+import requests
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -118,3 +119,20 @@ def calculate(request: Request,
     })
 
     return templates.TemplateResponse("fibonacci.html", {"request": request, "result": result})
+
+@router.get("/login", response_class=HTMLResponse)
+def login_form(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request, "error": None})
+
+@router.post("/login", response_class=HTMLResponse)
+def login_post(request: Request, username: str = Form(...), password: str = Form(...)):
+    response = requests.post("http://localhost:8000/token", data={"username": username, "password": password})
+    
+    if response.status_code == 200:
+        token = response.json()["access_token"]
+
+        resp = RedirectResponse(url="/", status_code=302)
+        resp.set_cookie(key="jwt_token", value=token, httponly=True)
+        return resp
+    else:
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
