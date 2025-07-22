@@ -7,6 +7,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - SECRET_KEY=${SECRET_KEY}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - REDIS_HOST=redis 
     depends_on:

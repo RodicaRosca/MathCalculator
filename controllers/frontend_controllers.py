@@ -9,6 +9,7 @@ from db.database import SessionLocal
 from models.request_log import RequestLog
 from services.math_services import MathService
 from kafka_logging import log_to_kafka
+from auth import verify_token
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -85,7 +86,10 @@ def calculate(request: Request, n: int = Form(...), m: int = Form(...), db: Sess
     return templates.TemplateResponse("pow.html", {"request": request, "result": result})
 
 @router.post("/calculate_fibonacci", response_class=HTMLResponse)
-def calculate(request: Request, n: int = Form(...), db: Session = Depends(get_db)):
+def calculate(request: Request, 
+              n: int = Form(...), 
+              db: Session = Depends(get_db), 
+              user=Depends(verify_token)):
     try:
         result = MathService.fibonacci(n)
     except Exception as e:
