@@ -38,7 +38,10 @@ def factorial_page(request: Request):
     return templates.TemplateResponse("fibonacci.html", {"request": request, "result": None})
 
 @router.post("/calculate_factorial", response_class=HTMLResponse)
-def calculate(request: Request, n: int = Form(...), db: Session = Depends(get_db)):
+def calculate(request: Request, 
+              n: int = Form(...), 
+              db: Session = Depends(get_db),
+              user=Depends(verify_token)):
     try:
         result = MathService.factorial(n)
     except Exception as e:
@@ -62,7 +65,11 @@ def calculate(request: Request, n: int = Form(...), db: Session = Depends(get_db
     return templates.TemplateResponse("factorial.html", {"request": request, "result": result})
 
 @router.post("/calculate_pow", response_class=HTMLResponse)
-def calculate(request: Request, n: int = Form(...), m: int = Form(...), db: Session = Depends(get_db)):
+def calculate(request: Request, 
+              n: int = Form(...), 
+              m: int = Form(...), 
+              db: Session = Depends(get_db),
+              user=Depends(verify_token)):
     try:
         result = MathService.power(n, m)
     except Exception as e:
