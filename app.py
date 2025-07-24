@@ -10,9 +10,11 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Math Microservice")
 Instrumentator().instrument(app).expose(app)
 
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
 
 app.include_router(auth_router)
 app.include_router(frontend_router)
