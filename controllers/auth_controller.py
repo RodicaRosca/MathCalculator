@@ -54,6 +54,6 @@ def signup(
 
 @router.get("/logout")
 def logout():
-    response = RedirectResponse(url="/login", status_code=302)
+    response = RedirectResponse(url="/auth", status_code=302)
     response.delete_cookie("jwt_token")
     return response
