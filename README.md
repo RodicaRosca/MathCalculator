@@ -1,6 +1,29 @@
+# Technology Choices and Rationale
+
+- **FastAPI**: Chosen for its high performance, modern async support, and automatic OpenAPI documentation. It is easy to use for both small and large projects and is ideal for scalable microservices.
+
+- **SQLAlchemy**: Used for ORM and database management, providing a robust and flexible way to interact with relational databases and manage models and schemas.
+
+- **JWT Authentication**: Ensures secure, stateless user authentication, which is well-suited for APIs and microservices.
+
+- **Jinja2**: Enables dynamic HTML rendering for the web interface, making it easy to build user-friendly pages for login, signup, and math operations.
+
+- **Prometheus**: Integrated for real-time metrics collection and monitoring, allowing for observability of application health and performance.
+
+- **Grafana**: Used for advanced visualization of metrics and dashboards, making it easy to monitor the system visually.
+
+- **Kafka**: Selected for scalable, distributed logging and event streaming, supporting robust log management and future integrations.
+
+- **Redis**: Used for caching to improve the performance of repeated computations and reduce database load.
+
+- **Docker & Docker Compose**: Chosen to simplify deployment and ensure consistency across development, testing, and production environments.
+
+- **Pytest**: Enables easy, readable, and powerful testing for both unit and integration tests, with support for fixtures and mocking.
 MathCalculator is a microservice designed to provide mathematical services with a web interface. The appplication provides authentication, monitoring, caching, containerization and logging. The core of the application is build with FastAPI and has RESTful endpoints for each mathematical operation and authentication.
 
-QLAlchemy is used for ORM and database management, with models and schemas organized for clarity. User data and request logs are persisted for security and analytics.
+I chose FastAPI because it is a performant web framework for building APIs with Python and it provides OpenAPI documentation, supports asynchronous programming and it is easy to use for both small and large projects. It is ideal for scalable microservices like mine, MathCalculator.
+
+SQLAlchemy is used for ORM and database management, with models and schemas organized for clarity. User data and request logs are persisted for security and analytics.
 
 Secure user registration and login are implemented using JWT tokens. Endpoints are protected, and user credentials are safely managed. The authentication logic is separated into controllers and services for a clean organization.
 
