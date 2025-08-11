@@ -94,9 +94,14 @@ Kafka will be running and available for logging and monitoring. You can use tool
 
 #### 5. Monitoring, Logging & Health
 
-- **Prometheus metrics**: [http://localhost:8000/metrics](http://localhost:8000/metrics)
+- **Prometheus metrics**: [http://localhost:8000/metrics]
+[http://localhost:9090/query]
 - **Grafana dashboards**: [http://localhost:3000](http://localhost:3000) (default login: `admin` / `admin`). Pre-configured dashboards visualize Prometheus metrics and, optionally, Kafka statistics.
 - **Kafka**: Running at the address specified in `docker-compose.yml`. Used for logging and can be monitored with external tools (e.g., Kafdrop, Grafana plugins).
+
+[docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic apilogs --from-beginning]
+
+
 - **Health check**: [http://localhost:8000/health](http://localhost:8000/health)
 
 #### 6. Running Tests
