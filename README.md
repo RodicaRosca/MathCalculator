@@ -104,6 +104,8 @@ Kafka will be running and available for logging and monitoring. You can use tool
 
 - **Health check**: [http://localhost:8000/health](http://localhost:8000/health)
 
+- **Redis**: [docker-compose exec redis redis-cli] -> keys *
+
 #### 6. Running Tests
 
 - Run all tests with:
