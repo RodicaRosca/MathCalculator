@@ -52,41 +52,6 @@ def fib_page(request: Request):
         "fibonacci.html", {"request": request, "result": None}
     )
 
-
-# @router.post("/calculate_factorial", response_class=HTMLResponse)
-# def calculate_factorial(
-#     request: Request,
-#     n: int = Form(...),
-#     db: Session = Depends(get_db),
-#     jwt_token: str = Cookie(None)
-# ):
-#     if not jwt_token:
-#         return RedirectResponse("/auth", status_code=302)
-#     try:
-#         verify_token(token=jwt_token)
-#     except Exception:
-#         return RedirectResponse("/auth", status_code=302)
-#     try:
-#         result = MathService.factorial(n)
-#     except Exception as e:
-#         result = str(e)
-#     log = RequestLog(
-#         operation="factorial",
-#         parameters=json.dumps({"n": n}),
-#         result=str(result)
-#     )
-#     db.add(log)
-#     db.commit()
-#     log_to_kafka({
-#         "operation": "factorial",
-#         "parameters": {"n": n},
-#         "result": result,
-#         "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
-#     })
-#     return templates.TemplateResponse(
-#         "factorial.html", {"request": request, "result": result}
-#     )
-
 @router.post("/calculate_factorial", response_class=HTMLResponse)
 def calculate_factorial(
     request: Request,
