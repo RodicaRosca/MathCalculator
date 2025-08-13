@@ -21,8 +21,15 @@ def get_db():
 
 
 @router.post("/pow")
-def pow_endpoint(req: PowRequest, db: Session = Depends(get_db)):
-    result = MathService.power(req.base, req.exponent)
+def pow_endpoint(
+    req: PowRequest,
+    db: Session = Depends(get_db),
+    token_data: dict = Depends(verify_token)
+):
+    try:
+        result = MathService.power(req.base, req.exponent)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     log = RequestLog(
         operation="pow",
         parameters=json.dumps(req.model_dump()),
@@ -30,11 +37,21 @@ def pow_endpoint(req: PowRequest, db: Session = Depends(get_db)):
     )
     db.add(log)
     db.commit()
+    log_to_kafka({
+        "operation": "pow",
+        "parameters": req.model_dump(),
+        "result": result,
+        "timestamp": str(datetime.now(timezone.utc))
+    })
     return {"result": result}
 
 
 @router.post("/fibonacci")
-def fibonacci_endpoint(req: FibonacciRequest, db: Session = Depends(get_db)):
+def fibonacci_endpoint(
+    req: FibonacciRequest,
+    db: Session = Depends(get_db),
+    token_data: dict = Depends(verify_token)
+):
     try:
         result = MathService.fibonacci(req.n)
     except ValueError as e:
@@ -46,7 +63,14 @@ def fibonacci_endpoint(req: FibonacciRequest, db: Session = Depends(get_db)):
     )
     db.add(log)
     db.commit()
+    log_to_kafka({
+        "operation": "fibonacci",
+        "parameters": req.model_dump(),
+        "result": result,
+        "timestamp": str(datetime.now(timezone.utc))
+    })
     return {"result": result}
+
 
 @router.post("/factorial")
 def factorial_endpoint(

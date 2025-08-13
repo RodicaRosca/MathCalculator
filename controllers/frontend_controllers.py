@@ -85,32 +85,25 @@ def calculate_pow(
     request: Request,
     n: int = Form(...),
     m: int = Form(...),
-    db: Session = Depends(get_db),
     jwt_token: str = Cookie(None)
 ):
     if not jwt_token:
         return RedirectResponse("/auth", status_code=302)
-    try:
-        verify_token(token=jwt_token)
-    except Exception:
-        return RedirectResponse("/auth", status_code=302)
-    try:
-        result = MathService.power(n, m)
-    except Exception as e:
-        result = str(e)
-    log = RequestLog(
-        operation="pow",
-        parameters=json.dumps({"base": n, "exponent": m}),
-        result=str(result)
+    response = requests.post(
+        "http://localhost:8000/pow",
+        json={"base": n, "exponent": m},
+        headers={"Authorization": f"Bearer {jwt_token}"}
     )
-    db.add(log)
-    db.commit()
-    log_to_kafka({
-        "operation": "pow",
-        "parameters": {"base": n, "exponent": m},
-        "result": result,
-        "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
-    })
+    if response.status_code == 200:
+        try:
+            result = response.json()["result"]
+        except Exception:
+            result = "Error parsing result"
+    else:
+        try:
+            result = response.json().get("detail", "Error")
+        except Exception:
+            result = response.text or "Unknown error"
     return templates.TemplateResponse(
         "pow.html", {"request": request, "result": result}
     )
@@ -120,34 +113,55 @@ def calculate_pow(
 def calculate_fibonacci(
     request: Request,
     n: int = Form(...),
-    db: Session = Depends(get_db),
+    jwt_token: str = Cookie(None)
+):
+
+    if not jwt_token:
+        return RedirectResponse("/auth", status_code=302)
+    response = requests.post(
+        "http://localhost:8000/fibonacci",
+        json={"n": n},
+        headers={"Authorization": f"Bearer {jwt_token}"}
+    )
+    if response.status_code == 200:
+        try:
+            result = response.json()["result"]
+        except Exception:
+            result = "Error parsing result"
+    else:
+        try:
+            result = response.json().get("detail", "Error")
+        except Exception:
+            result = response.text or "Unknown error"
+    return templates.TemplateResponse(
+        "fibonacci.html", {"request": request, "result": result}
+    )
+
+
+def calculate_factorial(
+    request: Request,
+    n: int = Form(...),
     jwt_token: str = Cookie(None)
 ):
     if not jwt_token:
         return RedirectResponse("/auth", status_code=302)
-    try:
-        verify_token(token=jwt_token)
-    except Exception:
-        return RedirectResponse("/auth", status_code=302)
-    try:
-        result = MathService.fibonacci(n)
-    except Exception as e:
-        result = str(e)
-    log = RequestLog(
-        operation="fibonacci",
-        parameters=json.dumps({"n": n}),
-        result=str(result)
+    response = requests.post(
+        "http://localhost:8000/factorial",
+        json={"n": n},
+        headers={"Authorization": f"Bearer {jwt_token}"}
     )
-    db.add(log)
-    db.commit()
-    log_to_kafka({
-        "operation": "fibonacci",
-        "parameters": {"n": n},
-        "result": result,
-        "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
-    })
+    if response.status_code == 200:
+        try:
+            result = response.json()["result"]
+        except Exception:
+            result = "Error parsing result"
+    else:
+        try:
+            result = response.json().get("detail", "Error")
+        except Exception:
+            result = response.text or "Unknown error"
     return templates.TemplateResponse(
-        "fibonacci.html", {"request": request, "result": result}
+        "factorial.html", {"request": request, "result": result}
     )
 
 
