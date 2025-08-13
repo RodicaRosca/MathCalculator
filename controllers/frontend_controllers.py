@@ -2,17 +2,11 @@ import datetime
 import json
 import requests
 from fastapi import (
-    APIRouter, Request, Form, Depends, Cookie
+    APIRouter, Request, Form, Cookie
 )
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
 from db.database import SessionLocal
-from models.request_log import RequestLog
-from services.math_services import MathService
-from kafka_logging import log_to_kafka
-from auth import verify_token
-
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
