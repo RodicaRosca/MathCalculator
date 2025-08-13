@@ -102,19 +102,31 @@ This will start the FastAPI app, database, Redis, Kafka, Prometheus, and Grafana
 #### 5. Monitoring, Logging & Health
 
 - **Prometheus metrics**: [http://localhost:8000/metrics](http://localhost:8000/metrics)
+
 - **Prometheus UI**: [http://localhost:9090/query](http://localhost:9090/query)
+
+![Diagram 1](images/prometheus.png)
+
 - **Grafana dashboards**: [http://localhost:3000](http://localhost:3000) (default login: `admin` / `admin`). Pre-configured dashboards visualize Prometheus metrics and, optionally, Kafka statistics.
+
+![Diagram 2](images/grafana.png)
+
 - **Kafka**: Running at the address specified in `docker-compose.yml`. Used for logging and can be monitored with external tools (e.g., Kafdrop, Grafana plugins).
   - View Kafka logs in terminal:
     ```
     docker-compose exec kafka kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic apilogs --from-beginning
     ```
+
+![Diagram 3](images/kafka.png)
+
 - **Health check**: [http://localhost:8000/health](http://localhost:8000/health)
 - **Redis CLI**:
   ```
   docker-compose exec redis redis-cli
   # Then run: keys *
   ```
+
+![Diagram 4](images/redis.png)
 
 ---
 
@@ -127,6 +139,7 @@ This will start the FastAPI app, database, Redis, Kafka, Prometheus, and Grafana
 
 ---
 
-This architecture ensures MathCalculator is robust, secure, and ready for both development and
+This architecture ensures MathCalculator is robust, secure, and ready for both development and production environments.
 
-![Diagram 1](diagram.png)
+![Diagram 5](images/diagram.png)
+![Diagram 6](images/diagram2.png)
