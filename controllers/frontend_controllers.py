@@ -1,5 +1,3 @@
-import datetime
-import json
 import requests
 from fastapi import (
     APIRouter, Request, Form, Cookie
@@ -45,6 +43,7 @@ def fib_page(request: Request):
     return templates.TemplateResponse(
         "fibonacci.html", {"request": request, "result": None}
     )
+
 
 @router.post("/calculate_factorial", response_class=HTMLResponse)
 def calculate_factorial(
@@ -129,33 +128,6 @@ def calculate_fibonacci(
             result = response.text or "Unknown error"
     return templates.TemplateResponse(
         "fibonacci.html", {"request": request, "result": result}
-    )
-
-
-def calculate_factorial(
-    request: Request,
-    n: int = Form(...),
-    jwt_token: str = Cookie(None)
-):
-    if not jwt_token:
-        return RedirectResponse("/auth", status_code=302)
-    response = requests.post(
-        "http://localhost:8000/factorial",
-        json={"n": n},
-        headers={"Authorization": f"Bearer {jwt_token}"}
-    )
-    if response.status_code == 200:
-        try:
-            result = response.json()["result"]
-        except Exception:
-            result = "Error parsing result"
-    else:
-        try:
-            result = response.json().get("detail", "Error")
-        except Exception:
-            result = response.text or "Unknown error"
-    return templates.TemplateResponse(
-        "factorial.html", {"request": request, "result": result}
     )
 
 
