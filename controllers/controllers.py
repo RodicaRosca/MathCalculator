@@ -5,6 +5,9 @@ from services.math_services import MathService
 from schemas.schemas import PowRequest, FibonacciRequest, FactorialRequest
 from db.database import SessionLocal
 from models.request_log import RequestLog
+from datetime import datetime, timezone
+from kafka_logging import log_to_kafka
+from auth import verify_token
 
 router = APIRouter()
 
@@ -45,9 +48,12 @@ def fibonacci_endpoint(req: FibonacciRequest, db: Session = Depends(get_db)):
     db.commit()
     return {"result": result}
 
-
 @router.post("/factorial")
-def factorial_endpoint(req: FactorialRequest, db: Session = Depends(get_db)):
+def factorial_endpoint(
+    req: FactorialRequest,
+    db: Session = Depends(get_db),
+    token_data: dict = Depends(verify_token)
+):
     try:
         result = MathService.factorial(req.n)
     except ValueError as e:
@@ -59,6 +65,12 @@ def factorial_endpoint(req: FactorialRequest, db: Session = Depends(get_db)):
     )
     db.add(log)
     db.commit()
+    log_to_kafka({
+        "operation": "factorial",
+        "parameters": req.model_dump(),
+        "result": result,
+        "timestamp": str(datetime.now(timezone.utc))
+    })
     return {"result": result}
 
 

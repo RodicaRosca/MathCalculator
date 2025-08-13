@@ -53,36 +53,63 @@ def fib_page(request: Request):
     )
 
 
+# @router.post("/calculate_factorial", response_class=HTMLResponse)
+# def calculate_factorial(
+#     request: Request,
+#     n: int = Form(...),
+#     db: Session = Depends(get_db),
+#     jwt_token: str = Cookie(None)
+# ):
+#     if not jwt_token:
+#         return RedirectResponse("/auth", status_code=302)
+#     try:
+#         verify_token(token=jwt_token)
+#     except Exception:
+#         return RedirectResponse("/auth", status_code=302)
+#     try:
+#         result = MathService.factorial(n)
+#     except Exception as e:
+#         result = str(e)
+#     log = RequestLog(
+#         operation="factorial",
+#         parameters=json.dumps({"n": n}),
+#         result=str(result)
+#     )
+#     db.add(log)
+#     db.commit()
+#     log_to_kafka({
+#         "operation": "factorial",
+#         "parameters": {"n": n},
+#         "result": result,
+#         "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
+#     })
+#     return templates.TemplateResponse(
+#         "factorial.html", {"request": request, "result": result}
+#     )
+
 @router.post("/calculate_factorial", response_class=HTMLResponse)
 def calculate_factorial(
     request: Request,
     n: int = Form(...),
-    db: Session = Depends(get_db),
     jwt_token: str = Cookie(None)
 ):
     if not jwt_token:
         return RedirectResponse("/auth", status_code=302)
-    try:
-        verify_token(token=jwt_token)
-    except Exception:
-        return RedirectResponse("/auth", status_code=302)
-    try:
-        result = MathService.factorial(n)
-    except Exception as e:
-        result = str(e)
-    log = RequestLog(
-        operation="factorial",
-        parameters=json.dumps({"n": n}),
-        result=str(result)
+    response = requests.post(
+        "http://localhost:8000/factorial",
+        json={"n": n},
+        headers={"Authorization": f"Bearer {jwt_token}"}
     )
-    db.add(log)
-    db.commit()
-    log_to_kafka({
-        "operation": "factorial",
-        "parameters": {"n": n},
-        "result": result,
-        "timestamp": str(datetime.datetime.now(datetime.timezone.utc))
-    })
+    if response.status_code == 200:
+        try:
+            result = response.json()["result"]
+        except Exception:
+            result = "Error parsing result"
+    else:
+        try:
+            result = response.json().get("detail", "Error")
+        except Exception:
+            result = response.text or "Unknown error"
     return templates.TemplateResponse(
         "factorial.html", {"request": request, "result": result}
     )
