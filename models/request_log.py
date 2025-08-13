@@ -9,6 +9,7 @@ class RequestLog(Base):
     operation = Column(String, index=True)
     parameters = Column(Text)
     result = Column(String)
+    user_name = Column(String, index=True)
     timestamp = Column(
         DateTime,
         default=lambda: datetime.datetime.now(datetime.timezone.utc)

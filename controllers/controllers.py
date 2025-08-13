@@ -33,7 +33,8 @@ def pow_endpoint(
     log = RequestLog(
         operation="pow",
         parameters=json.dumps(req.model_dump()),
-        result=str(result)
+        result=str(result),
+        user_name=str("user: " + token_data.get("sub"))
     )
     db.add(log)
     db.commit()
@@ -59,7 +60,8 @@ def fibonacci_endpoint(
     log = RequestLog(
         operation="fibonacci",
         parameters=json.dumps(req.model_dump()),
-        result=str(result)
+        result=str(result),
+        user_name=str("user: " + token_data.get("sub"))
     )
     db.add(log)
     db.commit()
@@ -85,7 +87,8 @@ def factorial_endpoint(
     log = RequestLog(
         operation="factorial",
         parameters=json.dumps(req.model_dump()),
-        result=str(result)
+        result=str(result),
+        user_name=str("user: " + token_data.get("sub"))
     )
     db.add(log)
     db.commit()
