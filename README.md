@@ -129,4 +129,4 @@ This will start the FastAPI app, database, Redis, Kafka, Prometheus, and Grafana
 
 This architecture ensures MathCalculator is robust, secure, and ready for both development and
 
-![Diagram 1](docs/diagram.png)
+![Diagram 1](diagram.png)
